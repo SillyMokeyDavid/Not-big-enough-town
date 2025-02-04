@@ -1,0 +1,17 @@
+local collectionService = game:GetService("CollectionService") -- Serviço de tags para manipular vários objetos com uma tag específica
+
+local Player = game.Players.LocalPlayer
+local Character = Player.Character or Player.Character:Wait() -- O personagem físico do jogador
+local Humanoid = Character:WaitForChild("Humanoid") -- Um objeto com os atributos do jogador como sua vida ou avatar
+local Seat = collectionService:GetTagged("Assento") -- Acessando a tag assentos que estão presentes em todos os assentos
+local UI = Player.PlayerGui.ScreenGui
+
+UI.Enabled = false
+
+Humanoid.Seated:Connect(function(seated, seat) -- Torna visível a interface após o atributo "Sit" do Humanoid for "True"
+	if seated then
+		UI.Enabled = true
+	else
+		UI.Enabled = false
+	end
+end)
