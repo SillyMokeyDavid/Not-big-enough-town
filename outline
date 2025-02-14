@@ -1,0 +1,40 @@
+local guiService = game:GetService("GuiService")
+local collectionService = game:GetService("CollectionService") -- Serviço para poder mudar os atributos de objetos com uma tag 
+local players = game:GetService("Players")
+
+local playerLocal: Player = players.LocalPlayer -- Jogador local
+local personagem = playerLocal.Character or playerLocal.CharacterAdded:Wait()
+local humanoid: Humanoid = personagem:WaitForChild("Humanoid") or personagem.ChildAdded:Wait()
+local humanoidRootPart: Part = personagem:WaitForChild("HumanoidRootPart", 8) or personagem.ChildAdded:Wait()
+local assentoAtual: Model = collectionService:GetTagged("Assento")
+
+local highlight: Highlight = Instance.new("Highlight")
+highlight.FillTransparency = 1
+highlight.Adornee = nil
+highlight.DepthMode = Enum.HighlightDepthMode.Occluded
+highlight.Parent = guiService
+
+while task.wait(.05) do
+	local menorDistancia = math.huge
+	local assentoProx = nil
+	
+	for i, v in pairs(assentoAtual) do
+		
+		if v:IsA("Model") then
+			local distancia = (humanoidRootPart.Position - v:WaitForChild("Cadeira").Position).Magnitude
+			
+			if distancia < menorDistancia and distancia < 10 then
+				menorDistancia = distancia
+				assentoProx = v
+			end
+			
+		end
+		
+	end
+	
+	if assentoProx and humanoid.Health >= 1 then
+		highlight.Adornee = assentoProx
+	else
+		highlight.Adornee = nil -- Remove o destaque se nenhuma cadeira for encontrada
+	end
+end
